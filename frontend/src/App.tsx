@@ -3,6 +3,7 @@ import Navbar from "./components/layout/Navbar.tsx"
 import Home from "./pages/Home.tsx"
 import About from "./pages/About.tsx"
 import Projects from "./pages/Projects.tsx"
+import "./App.css"
 
 function App() {
     return (
