@@ -1,15 +1,10 @@
 import { Link } from "react-router-dom"
+import useCategories from "../../hooks/categoryHook"
 
-const categories = [
-    "Electronics",
-    "Fashion",
-    "Home",
-    "Beauty",
-    "Sports",
-    "Toys",
-]
 
 const Navbar = () => {
+    const { categories } = useCategories();
+
     return (
         <nav className="w-full bg-white border-t border-b">
             <div className="max-w-7xl mx-auto px-4">

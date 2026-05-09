@@ -12,6 +12,13 @@ export async function getProducts(): Promise<Product[]> {
 
     return res.json();
 }
+export async function getCategories(): Promise<string[]> {
+    const res = await fetch(`${API_BASE}/category`);
 
+    if (!res.ok) {
+        throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+    return res.json();
+}
 // Nếu muốn gom nhiều hàm liên quan đến Product, bạn có thể thêm:
 // export async function getProductById(id: string) { ... }

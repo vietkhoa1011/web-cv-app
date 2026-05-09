@@ -6,7 +6,7 @@ const Header = () => {
         <header className="w-full bg-white shadow-sm">
             <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-6">
                 <Link to="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-md flex items-center justify-center text-white font-bold">E</div>
+                    <div className="w-10 h-10 bg-black rounded-none flex items-center justify-center text-white font-bold tracking-tighter">E</div>
                     <span className="font-black text-lg">E-Shop</span>
                 </Link>
 

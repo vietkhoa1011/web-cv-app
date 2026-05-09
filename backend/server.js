@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import Product from "./models/Product.js";
-
+import categoryRoute from "./routes/category.js";
 
 dotenv.config();
 
@@ -26,6 +26,9 @@ app.get("/product", async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+// category route
+
+app.use("/category", categoryRoute);
 
 // connect MongoDB
 mongoose.connect(process.env.MONGO_URI)
