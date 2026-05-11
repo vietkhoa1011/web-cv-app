@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import useCategories from "../../hooks/categoryHook"
+import useCategories from "../hooks/categoryHook"
 
 
 const Navbar = () => {

@@ -1,7 +1,6 @@
 // hooks/useCategories.ts
-
 import { useEffect, useState } from "react";
-import { getCategories } from "../services/api";
+import { getCategories } from "@/services/api";
 
 const useCategories = () => {
     const [categories, setCategories] = useState<string[]>([]);

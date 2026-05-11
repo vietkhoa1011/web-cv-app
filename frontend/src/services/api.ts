@@ -1,4 +1,6 @@
-import type { Product } from "../types/interface";
+// add at top of src/main.ts (or any .ts entry)
+/// <reference types="vite/client" />
+import type { Product } from "@/types/interface";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
