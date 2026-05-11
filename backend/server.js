@@ -2,8 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+
 import Product from "./models/Product.js";
 import categoryRoute from "./routes/category.js";
+import productRoute from "./routes/product.js";
 
 dotenv.config();
 
@@ -17,18 +19,11 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("API is running...");
 });
-// products route
-app.get("/product", async (req, res) => {
-    try {
-        const products = await Product.find();
-        res.json(products);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-// category route
 
-app.use("/category", categoryRoute);
+// products route
+app.use("/api/products", productRoute);
+// category route
+app.use("/api/category", categoryRoute);
 
 // connect MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -37,6 +32,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // run server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

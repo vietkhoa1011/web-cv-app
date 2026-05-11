@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-// @ts-ignore
 import Banner1 from "../assets/Banner-1.png";
-// @ts-ignore
 import Banner2 from "../assets/Banner-2.png";
-// @ts-ignore
 import Banner3 from "../assets/Banner-3.png";
 
 const BannerSlider = () => {

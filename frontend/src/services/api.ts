@@ -1,26 +1,70 @@
-// add at top of src/main.ts (or any .ts entry)
-/// <reference types="vite/client" />
-import type { Product } from "@/types/interface";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+interface FetchProductsParams {
+    category?: string;
+    page?: number;
+    limit?: number;
+    sort?: string;
+}
 
-// Tách riêng hàm xử lý logic
-export async function getProducts(): Promise<Product[]> {
-    const res = await fetch(`${API_BASE}/product`);
+export async function fetchProducts(params: FetchProductsParams = {}): Promise<any> {
+    const searchParams = new URLSearchParams();
 
-    if (!res.ok) {
-        throw new Error(`API error: ${res.status} ${res.statusText}`);
+    // Chỉ thêm params khi có giá trị
+    if (params.category && params.category.trim() !== '') {
+        searchParams.set("category", params.category);
+
+    }
+    if (params.page) {
+        searchParams.set("page", params.page.toString());
+    }
+    if (params.limit) {
+        searchParams.set("limit", params.limit.toString());
+    }
+    if (params.sort) {
+        searchParams.set("sort", params.sort);
     }
 
-    return res.json();
-}
-export async function getCategories(): Promise<string[]> {
-    const res = await fetch(`${API_BASE}/category`);
+    const queryString = searchParams.toString();
+    const url = `${API_BASE_URL}/products${queryString ? `?${queryString}` : ""}`;
 
-    if (!res.ok) {
-        throw new Error(`API error: ${res.status} ${res.statusText}`);
+
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+
+        return result;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
     }
-    return res.json();
 }
-// Nếu muốn gom nhiều hàm liên quan đến Product, bạn có thể thêm:
-// export async function getProductById(id: string) { ... }
+
+export async function fetchCategories(): Promise<any> {
+    const url = `${API_BASE_URL}/category`;
+
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        return result;
+    } catch (error) {
+        console.error('Fetch categories error:', error);
+        throw error;
+    }
+}

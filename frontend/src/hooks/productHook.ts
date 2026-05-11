@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import type { Product } from "@/types/interface"
-import { getProducts } from "@/services/api"
+import type { Product } from "@/types/index"
+import { fetchCategories } from "@/services/api"
 
 export function useProducts() {
     const [products, setProducts] = useState<Product[]>([])
@@ -12,7 +12,7 @@ export function useProducts() {
         async function fetchProducts() {
             try {
                 setLoading(true)
-                const data = await getProducts()
+                const data = await fetchCategories()
                 if (mounted) setProducts(data)
             } catch (err: any) {
                 if (mounted) setError(err.message || "Unknown error")

@@ -1,12 +1,25 @@
-import { Product } from "@/types/interface";
+import { Product } from "@/types/index";
 import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
     products: Product[];
+    loading: boolean;
     onResetCategory: () => void;
 }
 
-export default function ProductGrid({ products, onResetCategory }: ProductGridProps) {
+export default function ProductGrid({ products, loading, onResetCategory }: ProductGridProps) {
+
+
+    if (loading) {
+        return (
+            <section className="max-w-7xl mx-auto px-4 py-16">
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section id="featured" className="max-w-7xl mx-auto px-4 py-16">
             <div className="flex items-center justify-between mb-10 border-b border-neutral-200 pb-4">
@@ -25,11 +38,19 @@ export default function ProductGrid({ products, onResetCategory }: ProductGridPr
                 </a>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {products.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                ))}
-            </div>
+            {products.length === 0 ? (
+                <div className="text-center py-12 text-gray-400">
+                    No products found
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {products.map((product) => (
+                        <ProductCard key={product._id} product={product} />
+                    ))}
+                </div>
+            )}
         </section>
     );
 }
+
+
