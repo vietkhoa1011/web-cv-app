@@ -5,7 +5,11 @@ Trong quá trình phát triển, tôi đã nhiều lần refactor và tối ưu 
 Tôi đã dần cải thiện project từ các cách triển khai cơ bản sang các giải pháp tối ưu và scalable hơn, ví dụ:
 
 Chuyển từ useEffect + useState sang sử dụng TanStack Query để quản lý server state, caching và re-fetching hiệu quả hơn.
+
 Tách business logic/API ra khỏi component để code dễ maintain và tái sử dụng.
+
 Tổ chức lại cấu trúc thư mục theo hướng scalable.
+
 Tối ưu component rendering và giảm boilerplate code.
+
 Cải thiện trải nghiệm người dùng thông qua loading state, error handling và pagination/filtering.
