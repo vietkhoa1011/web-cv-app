@@ -1,5 +1,5 @@
-import { CategorySectionProps, FetchProductsParams } from "@/types/index";
-
+import { CategorySectionProps } from "@/types/index";
+// Component hiển thị danh mục sản phẩm
 const CategorySection = ({ categories, selectedCategory, setSelectedCategory }: CategorySectionProps) => {
     return (
         <section className="max-w-7xl mx-auto px-4 py-12">

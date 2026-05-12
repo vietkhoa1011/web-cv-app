@@ -1,70 +1,35 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { ProductsResponse, FetchProductsParams, CategoriesResponse } from '@/types';
 
-interface FetchProductsParams {
-    category?: string;
-    page?: number;
-    limit?: number;
-    sort?: string;
-}
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-export async function fetchProducts(params: FetchProductsParams = {}): Promise<any> {
+// ----- PRODUCTS -----
+export async function fetchProducts(params: FetchProductsParams = {}): Promise<ProductsResponse> {
     const searchParams = new URLSearchParams();
+    if (params.category) searchParams.set('category', params.category);
+    if (params.page) searchParams.set('page', params.page.toString());
+    if (params.limit) searchParams.set('limit', params.limit.toString());
+    if (params.sort) searchParams.set('sort', params.sort);
 
-    // Chỉ thêm params khi có giá trị
-    if (params.category && params.category.trim() !== '') {
-        searchParams.set("category", params.category);
-
+    const url = `${BASE_URL}/products${searchParams.toString() ? `?${searchParams}` : ''}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const json: ProductsResponse = await response.json();
+    // Đảm bảo data và pagination luôn có
+    if (!json.success || !Array.isArray(json.data)) {
+        throw new Error('Invalid API response structure');
     }
-    if (params.page) {
-        searchParams.set("page", params.page.toString());
-    }
-    if (params.limit) {
-        searchParams.set("limit", params.limit.toString());
-    }
-    if (params.sort) {
-        searchParams.set("sort", params.sort);
-    }
-
-    const queryString = searchParams.toString();
-    const url = `${API_BASE_URL}/products${queryString ? `?${queryString}` : ""}`;
-
-
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-
-        return result;
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw error;
-    }
+    return json;
 }
 
-export async function fetchCategories(): Promise<any> {
-    const url = `${API_BASE_URL}/category`;
-
-
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        return result;
-    } catch (error) {
-        console.error('Fetch categories error:', error);
-        throw error;
+// ----- CATEGORIES -----
+export async function fetchCategories(): Promise<string[]> {
+    const url = `${BASE_URL}/category`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const json: CategoriesResponse = await response.json();
+    // API trả về mảng string trực tiếp
+    if (!Array.isArray(json)) {
+        throw new Error('Invalid categories response');
     }
+    return json; // đã là string[]
 }

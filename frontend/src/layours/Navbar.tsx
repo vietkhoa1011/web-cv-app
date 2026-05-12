@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom"
-import useCategories from "../hooks/categoryHook"
-
+import { Link } from "react-router-dom";
+import { useCategories } from "@/hooks/useCategories"; // hook mới
 
 const Navbar = () => {
-    const { categories } = useCategories();
+    const { data: categories = [] } = useCategories();
 
     return (
         <nav className="w-full bg-white border-t border-b">
@@ -25,7 +24,7 @@ const Navbar = () => {
                 </ul>
             </div>
         </nav>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

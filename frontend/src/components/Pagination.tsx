@@ -3,7 +3,7 @@ interface PaginationProps {
     totalPages: number;
     onPageChange: (page: number) => void;
 }
-
+// Component phân trang
 export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
     if (totalPages <= 1) return null;
 

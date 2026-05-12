@@ -1,25 +1,59 @@
-import BannerSlider from "@/components/BannerSlider";
-import CategorySection from "@/components/CategorySection";
-import Pagination from "@/components/Pagination";
-import ProductGrid from "@/components/ProductGrid";
-import { useFilteredProducts } from "@/hooks/useFilteredProducts";
+import { useState } from 'react';
+import BannerSlider from '@/components/BannerSlider';
+import CategorySection from '@/components/CategorySection';
+import Pagination from '@/components/Pagination';
+import ProductGrid from '@/components/ProductGrid';
+import { useCategories } from '@/hooks/useCategories';
+import { useProducts } from '@/hooks/useProducts';
 
 function Home() {
+    // State for filtering and pagination
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
+
+    // Fetch categories
     const {
-        products,
-        loading,
-        error,
-        categories,
-        selectedCategory,
-        setSelectedCategory,
-        currentPage,
-        setCurrentPage,
-        totalPages,
-    } = useFilteredProducts(12);
+        data: categories = [],
+        isLoading: catLoading,
+        isError: catError,
+        error: catErrorObj,
+    } = useCategories();
+
+    // Fetch products based on filter & page
+    const {
+        data: productsResponse,
+        isLoading: prodLoading,
+        isError: prodError,
+        error: prodErrorObj,
+    } = useProducts({
+        category: selectedCategory || undefined, // bỏ qua param nếu rỗng
+        page: currentPage,
+        limit: itemsPerPage,
+    });
+
+    // Extract data from response
+    const products = productsResponse?.data ?? [];
+    const pagination = productsResponse?.pagination;
+    const totalPages = pagination?.totalPages ?? 1;
+
+    // Combine loading/error states for simplicity
+    const loading = catLoading || prodLoading;
+    const error = catError || prodError;
+
+    // When category changes, reset to page 1
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
+        setCurrentPage(1);
+    };
+
+    // Error state (có thể hiển thị lỗi cụ thể hơn nếu muốn)
     if (error) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <p className="text-red-500">Error: {error}</p>
+                <p className="text-red-500">
+                    Error: {catErrorObj?.message || prodErrorObj?.message || 'Something went wrong'}
+                </p>
             </div>
         );
     }
@@ -28,21 +62,17 @@ function Home() {
         <main className="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white antialiased">
             <BannerSlider />
 
-            {/* Debug: Hiển thị số lượng categories */}
-            <div className="text-center text-sm text-gray-400">
-                Categories loaded: {categories.length}
-            </div>
-
             <CategorySection
                 categories={categories}
                 selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
+                setSelectedCategory={handleCategoryChange}
             />
 
             <ProductGrid
                 products={products}
                 loading={loading}
-                onResetCategory={() => setSelectedCategory("")}
+                onResetCategory={() => handleCategoryChange('')}
+                onCategoryFilter={handleCategoryChange}
             />
 
             {totalPages > 1 && (
