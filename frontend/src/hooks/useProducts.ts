@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchProducts } from '@/services/api';
 import type { FetchProductsParams } from '@/types';
 
@@ -7,6 +7,6 @@ export function useProducts(params: FetchProductsParams = {}) {
   return useQuery({
     queryKey: ['products', { category, page, limit, sort }],
     queryFn: () => fetchProducts({ category, page, limit, sort }),
-    // keepPreviousData: true, // giữ data cũ khi chuyển trang, tránh loading trắng
+    placeholderData: keepPreviousData, // giữ data cũ khi chuyển trang, tránh loading trắng
   });
 }

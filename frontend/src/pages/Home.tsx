@@ -52,7 +52,7 @@ function Home() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <p className="text-red-500">
-                    Error: {catErrorObj?.message || prodErrorObj?.message || 'Something went wrong'}
+                    Error: {(catErrorObj as Error)?.message || (prodErrorObj as Error)?.message || 'Something went wrong'}
                 </p>
             </div>
         );
@@ -67,13 +67,14 @@ function Home() {
                 selectedCategory={selectedCategory}
                 setSelectedCategory={handleCategoryChange}
             />
-
+            {catError && <p className="text-red-400">Could not load categories</p>}
             <ProductGrid
                 products={products}
                 loading={loading}
                 onResetCategory={() => handleCategoryChange('')}
                 onCategoryFilter={handleCategoryChange}
             />
+            {prodError && <p className="text-red-500">Failed to load products: {(prodErrorObj as Error)?.message}</p>}
 
             {totalPages > 1 && (
                 <Pagination
