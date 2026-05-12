@@ -6,7 +6,7 @@ async function testFilter() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB');
 
-    const Product = mongoose.model('Product', require('./models/Product').schema);
+    const Product = mongoose.model('Product', require('./src/models/Product').schema);
 
     // Test 1: Xem tất cả categories
     const categories = await Product.distinct('category');
