@@ -1,0 +1,9 @@
+[debug] [vite] connecting...
+[debug] [vite] connected.
+[info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[info] 🔍 Fetching products: http://localhost:5000/api/products?page=1&limit=12
+[info] 📦 API Response: [object Object]
+[info] 🔍 Fetching products: http://localhost:5000/api/products?search=Fjallraven&page=1&limit=12
+[info] 📦 API Response: [object Object]
+[info] 🔍 Fetching products: http://localhost:5000/api/products?search=men%27s+clothing&page=1&limit=12
+[info] 📦 API Response: [object Object]

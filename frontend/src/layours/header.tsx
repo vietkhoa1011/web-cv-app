@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
+
 import { Search, ShoppingCart, User } from "lucide-react"; // Cần cài đặt lucide-react
 
 const Header = () => {
@@ -46,11 +46,6 @@ const Header = () => {
                         </span>
                     </Link>
                 </div>
-            </div>
-
-            {/* Phân tách Navbar và Header bằng một đường kẻ nhẹ */}
-            <div className="border-t border-slate-100">
-                <Navbar />
             </div>
         </header>
     );

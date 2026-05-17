@@ -1,33 +1,32 @@
 import { useState } from 'react';
 import BannerSlider from '@/components/BannerSlider';
-import CategorySection from '@/components/CategorySection';
 import Pagination from '@/components/Pagination';
 import ProductGrid from '@/components/ProductGrid';
-import { useCategories } from '@/hooks/useCategories';
-import { useProducts } from '@/hooks/useProducts';
+import SearchBar from '@/components/SearchBar';
+import FilterSidebar from '@/components/FilterSidebar';
+import { useProductSearch } from '@/hooks/useProductSearch';
+import type { SearchFilters } from '@/types';
 
 function Home() {
-    // State for filtering and pagination
-    const [selectedCategory, setSelectedCategory] = useState('');
+    // Search and filter state
+    const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+        search: '',
+        category: '',
+        priceMin: undefined,
+        priceMax: undefined,
+        rating: undefined,
+    });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
-    // Fetch categories
-    const {
-        data: categories = [],
-        isLoading: catLoading,
-        isError: catError,
-        error: catErrorObj,
-    } = useCategories();
-
-    // Fetch products based on filter & page
+    // Fetch products based on search/filters & page
     const {
         data: productsResponse,
         isLoading: prodLoading,
         isError: prodError,
         error: prodErrorObj,
-    } = useProducts({
-        category: selectedCategory || undefined, // bỏ qua param nếu rỗng
+    } = useProductSearch({
+        ...searchFilters,
         page: currentPage,
         limit: itemsPerPage,
     });
@@ -35,24 +34,32 @@ function Home() {
     // Extract data from response
     const products = productsResponse?.data ?? [];
     const pagination = productsResponse?.pagination;
+    const filterMetadata = productsResponse?.filters;
     const totalPages = pagination?.totalPages ?? 1;
 
-    // Combine loading/error states for simplicity
-    const loading = catLoading || prodLoading;
-    const error = catError || prodError;
-
-    // When category changes, reset to page 1
-    const handleCategoryChange = (category: string) => {
-        setSelectedCategory(category);
+    // When filters change, reset to page 1
+    const handleFilterChange = (filters: SearchFilters) => {
+        setSearchFilters(filters);
         setCurrentPage(1);
     };
 
-    // Error state (có thể hiển thị lỗi cụ thể hơn nếu muốn)
-    if (error) {
+    const handleClearAllFilters = () => {
+        setSearchFilters({
+            search: '',
+            category: '',
+            priceMin: undefined,
+            priceMax: undefined,
+            rating: undefined,
+        });
+        setCurrentPage(1);
+    };
+
+    // Error state
+    if (prodError) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <p className="text-red-500">
-                    Error: {(catErrorObj as Error)?.message || (prodErrorObj as Error)?.message || 'Something went wrong'}
+                    Error: {(prodErrorObj as Error)?.message || 'Something went wrong'}
                 </p>
             </div>
         );
@@ -62,27 +69,72 @@ function Home() {
         <main className="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white antialiased">
             <BannerSlider />
 
-            <CategorySection
-                categories={categories}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={handleCategoryChange}
-            />
-            {catError && <p className="text-red-400">Could not load categories</p>}
-            <ProductGrid
-                products={products}
-                loading={loading}
-                onResetCategory={() => handleCategoryChange('')}
-                onCategoryFilter={handleCategoryChange}
-            />
-            {prodError && <p className="text-red-500">Failed to load products: {(prodErrorObj as Error)?.message}</p>}
+            {/* Search Bar */}
+            <div className="bg-stone-50 border-b border-stone-200">
+                <div className="max-w-7xl mx-auto">
+                    <SearchBar onSearch={handleFilterChange} activeFilters={searchFilters} />
+                </div>
+            </div>
 
-            {totalPages > 1 && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
-            )}
+            {/* Main content with sidebar */}
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Sidebar Filters */}
+                    {filterMetadata && (
+                        <div className="lg:col-span-1">
+                            <FilterSidebar
+                                filters={filterMetadata}
+                                activeFilters={searchFilters}
+                                onFilterChange={handleFilterChange}
+                                onClearAll={handleClearAllFilters}
+                            />
+                        </div>
+                    )}
+
+                    {/* Products Grid */}
+                    <div className="lg:col-span-3">
+                        {/* Products display */}
+                        <ProductGrid
+                            products={products}
+                            loading={prodLoading}
+                            onResetCategory={() => handleFilterChange({ ...searchFilters, category: '' })}
+                            onCategoryFilter={(category) =>
+                                handleFilterChange({ ...searchFilters, category })
+                            }
+                        />
+
+                        {prodError && (
+                            <p className="text-red-500">
+                                Failed to load products: {(prodErrorObj as Error)?.message}
+                            </p>
+                        )}
+
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                            <div className="mt-8">
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                    onPageChange={setCurrentPage}
+                                />
+                            </div>
+                        )}
+
+                        {/* No results state */}
+                        {!prodLoading && products.length === 0 && (
+                            <div className="flex flex-col items-center justify-center py-12">
+                                <p className="text-lg text-stone-600 mb-4">No products found</p>
+                                <button
+                                    onClick={handleClearAllFilters}
+                                    className="px-4 py-2 bg-stone-900 text-white rounded-lg hover:bg-stone-800 text-sm font-medium"
+                                >
+                                    Clear Filters
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </main>
     );
 }

@@ -4,6 +4,7 @@ import Footer from "@/layours/footer";
 import Home from "@/pages/Home";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ProductDetailPage from "./pages/ProductDetailPage";
 const queryClient = new QueryClient();
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Header />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/product/:id" element={<ProductDetailPage />} />
                 </Routes>
                 <Footer />
             </BrowserRouter>

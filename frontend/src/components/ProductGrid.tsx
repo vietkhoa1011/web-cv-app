@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Product } from "@/types/index";
 import ProductCard from "./ProductCard";
 import ProductSidebar from "./ProductSidebar";
-
 interface ProductGridProps {
     products: Product[];
     loading: boolean;

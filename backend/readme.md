@@ -1,4 +1,4 @@
-my-app-backend/
+cv-app-backend/
 ├── node_modules/       # Thư viện phụ thuộc
 ├── src/                # Mã nguồn chính
 │   ├── config/         # Cấu hình DB, biến môi trường (.env)

@@ -27,6 +27,10 @@ const productSchema = new mongoose.Schema({
     }
 });
 
+// Indices for search performance
+productSchema.index({ title: 1, description: 1 });
+productSchema.index({ category: 1, price: 1, 'rating.rate': 1 });
+
 export default mongoose.model("Product", productSchema, "products");
 
 
