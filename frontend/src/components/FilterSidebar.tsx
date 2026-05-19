@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import type { SearchFilters, FilterMetadata } from '@/types';
 
 interface FilterSidebarProps {
@@ -63,7 +63,7 @@ export default function FilterSidebar({
     activeFilters.rating;
 
   return (
-    <aside className="w-full max-w-xs px-4 py-6 bg-stone-50 border border-stone-200 rounded-lg">
+    <aside className="w-full px-4 py-6 bg-stone-50 border border-stone-200 rounded-lg">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-stone-900">Filters</h3>
         {hasActiveFilters && (

@@ -67,3 +67,9 @@ export interface ProductDetailResponse {
     success: boolean;
     data: Product; // chi tiết 1 sản phẩm
 }
+
+// Type cho search suggestions
+export interface SearchSuggestionsResponse {
+    success: boolean;
+    data: Product[];
+}

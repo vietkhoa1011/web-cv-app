@@ -1,8 +1,24 @@
-import { Link } from "react-router-dom";
-
-import { Search, ShoppingCart, User } from "lucide-react"; // Cần cài đặt lucide-react
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { ShoppingCart, User } from "lucide-react";
+import { useCallback } from "react";
+import HeaderSearch from "@/components/HeaderSearch";
 
 const Header = () => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const urlKeyword = searchParams.get('q') || '';
+
+    const handleSearchChange = useCallback((keyword: string) => {
+        if (keyword.trim()) {
+            navigate(`/?q=${encodeURIComponent(keyword.trim())}`, { replace: true });
+        } else {
+            // Nếu không có keyword và đang có q trên URL, xoá nó
+            if (searchParams.has('q')) {
+                navigate('/', { replace: true });
+            }
+        }
+    }, [navigate, searchParams]);
+
     return (
         <header className="w-full bg-slate-50/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
             <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-8">
@@ -17,20 +33,11 @@ const Header = () => {
                     </span>
                 </Link>
 
-                {/* Search Bar - Refined UX */}
-                <div className="flex-1 max-w-2xl hidden md:block">
-                    <div className="relative group">
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm sản phẩm cao cấp..."
-                            className="w-full bg-white border border-slate-200 rounded-full py-2.5 pl-5 pr-12 text-sm transition-all 
-                         focus:outline-none focus:ring-2 focus:ring-sky-100 focus:border-sky-400"
-                        />
-                        <button className="absolute right-1.5 top-1.5 bg-slate-900 hover:bg-slate-800 text-white p-1.5 rounded-full transition-colors">
-                            <Search size={18} />
-                        </button>
-                    </div>
-                </div>
+                {/* Search Bar - Realtime Search */}
+                <HeaderSearch
+                    initialKeyword={urlKeyword}
+                    onSearchChange={handleSearchChange}
+                />
 
                 {/* Actions - Soft Icons */}
                 <div className="flex items-center gap-6">

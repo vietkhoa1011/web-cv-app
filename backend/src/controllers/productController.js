@@ -27,14 +27,8 @@ export const getProducts = async (req, res) => {
 
         // Category filter
         if (category && category.trim()) {
-            const cleanCategory = category.trim();
-            if (mongoose.Types.ObjectId.isValid(cleanCategory)) {
-                filter.category = new mongoose.Types.ObjectId(cleanCategory);
-            } else {
-                filter.category = { $regex: new RegExp(`^${cleanCategory}`, 'i') };
-            }
+            filter.category = { $regex: new RegExp(`^${category.trim()}`, 'i') };
         }
-
         // Price range filter
         const priceConditions = {};
         if (priceMin !== undefined && priceMin !== '' && !isNaN(priceMin)) {
@@ -59,7 +53,7 @@ export const getProducts = async (req, res) => {
         const limitNum = parseInt(limit) || 12;
         const skip = (pageNum - 1) * limitNum;
 
-        console.log('🔍 Backend Filter:', JSON.stringify(filter, null, 2)); // Debug log
+        console.log('🔍 Backend Filter:', JSON.stringify(filter, null, 2));
 
         const total = await Product.countDocuments(filter);
         const products = await Product.find(filter)
@@ -67,7 +61,7 @@ export const getProducts = async (req, res) => {
             .limit(limitNum)
             .lean();
 
-        console.log(`📊 Results: ${products.length} items (total ${total})`); // Debug log
+        console.log(`📊 Results: ${products.length} items (total ${total})`);
 
         // Get available filter options for frontend
         const allCategories = await Product.distinct('category');
@@ -90,7 +84,7 @@ export const getProducts = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('❌ Search error:', error); // Debug log
+        console.error('❌ Search error:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -133,6 +127,38 @@ export const debugProducts = async (req, res) => {
         res.json({ sampleProducts: products, allCategories: categories });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+// API search realtime - nhanh, nhẹ, không cache, giới hạn kết quả
+export const searchProducts = async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        if (!q || !q.trim()) {
+            return res.json({ success: true, data: [] });
+        }
+
+        const searchRegex = new RegExp(q.trim(), 'i');
+
+        const products = await Product.find({
+            $or: [
+                { title: searchRegex },
+                { description: searchRegex },
+                { category: searchRegex }
+            ]
+        })
+            .limit(8)
+            .select('title price image category rating.rate')
+            .lean();
+
+        res.json({
+            success: true,
+            data: products
+        });
+    } catch (error) {
+        console.error('❌ Search suggestions error:', error);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
