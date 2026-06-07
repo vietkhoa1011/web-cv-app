@@ -34,8 +34,20 @@ router.post("/login", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Mật khẩu không đúng" });
         }
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-        res.json({ token });
+        const token = jwt.sign(
+            { id: user._id, username: user.username, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            }
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

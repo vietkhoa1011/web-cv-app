@@ -1,3 +1,4 @@
+// src/hooks/useProducts.ts
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchProducts } from '@/services/api';
 import type { FetchProductsParams } from '@/types';

@@ -1,10 +1,23 @@
+import { useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useProduct } from '@/hooks/useProduct';
 import { ShoppingCart, Star, ArrowLeft, Heart, ShieldCheck, Truck } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import Toast from '@/components/Toast';
 
 export default function ProductDetailPage() {
     const { id } = useParams<{ id: string }>();
     const { data: product, isLoading, isError, error } = useProduct(id!);
+    const { addItem } = useCart();
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+
+    const handleAddToCart = useCallback(() => {
+        if (!product) return;
+        addItem(product);
+        setToastMessage(`${product.title} added to cart`);
+        setShowToast(true);
+    }, [product, addItem]);
 
     if (isLoading) {
         return (
@@ -116,13 +129,19 @@ export default function ProductDetailPage() {
 
                     {/* Nút hành động (căn giữa) */}
                     <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                        <button className="flex-1 bg-black text-white flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all active:scale-[0.98] shadow-xl shadow-gray-200 max-w-sm mx-auto">
+                        <button
+                            onClick={handleAddToCart}
+                            className="flex-1 bg-black text-white flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all active:scale-[0.98] shadow-xl shadow-gray-200 max-w-sm mx-auto"
+                        >
                             <ShoppingCart className="w-5 h-5" />
                             Thêm vào giỏ hàng
                         </button>
-                        <button className="px-8 py-4 border-2 border-gray-200 rounded-2xl font-bold hover:border-black transition-colors active:scale-[0.98] max-w-sm mx-auto">
+                        <Link
+                            to="/cart"
+                            className="px-8 py-4 border-2 border-gray-200 rounded-2xl font-bold hover:border-black transition-colors active:scale-[0.98] max-w-sm mx-auto flex items-center justify-center"
+                        >
                             Mua ngay
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Chính sách giao hàng & đổi trả */}
@@ -144,6 +163,13 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Toast notification */}
+            <Toast
+                message={toastMessage}
+                isVisible={showToast}
+                onClose={() => setShowToast(false)}
+            />
         </div>
     );
 }

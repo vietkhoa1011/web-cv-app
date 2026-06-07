@@ -73,3 +73,54 @@ export interface SearchSuggestionsResponse {
     success: boolean;
     data: Product[];
 }
+
+// ----- AUTH TYPES -----
+export interface AuthUser {
+    id: string;
+    username: string;
+    email: string;
+    role: 'admin' | 'user';
+}
+
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface RegisterData {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export interface AuthResponse {
+    token: string;
+    user: AuthUser;
+}
+
+export interface AuthErrorResponse {
+    message: string;
+}
+
+// ----- CART TYPES -----
+export interface CartItem {
+    product: Product;
+    quantity: number;
+    selected: boolean;
+}
+
+export interface CartContextType {
+    items: CartItem[];
+    addItem: (product: Product, quantity?: number) => void;
+    removeItem: (productId: string) => void;
+    updateQuantity: (productId: string, quantity: number) => void;
+    toggleSelect: (productId: string) => void;
+    toggleSelectAll: () => void;
+    clearCart: () => void;
+    totalItems: number;
+    subtotal: number;
+    total: number;
+    selectedItems: CartItem[];
+    selectedCount: number;
+}
+

@@ -1,6 +1,33 @@
-import { Product, ProductsResponse, FetchProductsParams, CategoriesResponse, ProductDetailResponse, SearchSuggestionsResponse } from '@/types';
+import { Product, ProductsResponse, FetchProductsParams, CategoriesResponse, ProductDetailResponse, SearchSuggestionsResponse, LoginCredentials, RegisterData, AuthUser } from '@/types';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// ----- AUTH -----
+export async function loginUser(credentials: LoginCredentials): Promise<{ token: string; user: AuthUser }> {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+    }
+    return { token: data.token, user: data.user };
+}
+
+export async function registerUser(data: RegisterData): Promise<{ message: string }> {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message || 'Registration failed');
+    }
+    return json;
+}
 
 // ----- PRODUCTS -----
 export async function fetchProducts(params: FetchProductsParams = {}): Promise<ProductsResponse> {
@@ -29,7 +56,6 @@ export async function fetchProducts(params: FetchProductsParams = {}): Promise<P
 // ----- SEARCH SUGGESTIONS (realtime) -----
 export async function fetchSearchSuggestions(q: string, signal?: AbortSignal): Promise<Product[]> {
     if (!q.trim()) return [];
-
     const url = `${BASE_URL}/products/search?q=${encodeURIComponent(q.trim())}`;
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);

@@ -132,7 +132,7 @@ export default function FilterSidebar({
                 value={activeFilters.priceMin || ''}
                 onChange={(e) => handlePriceMinChange(e.target.value)}
                 placeholder={`$${filters.priceRange?.minPrice || 0}`}
-                className="w-full px-2 py-1 mt-1 text-sm border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500"
+                className="w-full px-2 py-1 mt-1 text-sm text-stone-900 bg-white border rounded focus:outline-none focus:ring-1 placeholder:text-stone-400"
               />
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function FilterSidebar({
                 value={activeFilters.priceMax || ''}
                 onChange={(e) => handlePriceMaxChange(e.target.value)}
                 placeholder={`$${filters.priceRange?.maxPrice || 10000}`}
-                className="w-full px-2 py-1 mt-1 text-sm border border-stone-300 rounded focus:outline-none focus:ring-1 focus:ring-stone-500"
+                className="w-full px-2 py-1 mt-1 text-sm text-stone-900 bg-white border rounded focus:outline-none focus:ring-1 placeholder:text-stone-400"
               />
             </div>
           </div>

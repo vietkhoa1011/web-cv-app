@@ -84,7 +84,7 @@ export default function HeaderSearch({ initialKeyword = '', onSearchChange }: He
     if (!keyword.trim()) return text;
     const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     const parts = text.split(regex);
-    return parts.map((part, i) => 
+    return parts.map((part, i) =>
       regex.test(part) ? (
         <span key={i} className="font-semibold text-stone-900">{part}</span>
       ) : (
@@ -94,7 +94,7 @@ export default function HeaderSearch({ initialKeyword = '', onSearchChange }: He
   };
 
   return (
-    <div ref={dropdownRef} className="relative flex-1 max-w-2xl hidden md:block">
+    <div ref={dropdownRef} className="relative w-full max-w-full md:max-w-2xl flex-1">
       <div className="relative group">
         <input
           ref={inputRef}
@@ -104,7 +104,7 @@ export default function HeaderSearch({ initialKeyword = '', onSearchChange }: He
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
-          className="w-full bg-white border border-slate-200 rounded-full py-2.5 pl-5 pr-12 text-sm transition-all 
+          className="w-full bg-white border border-slate-200 rounded-full py-2 pl-4 pr-12 text-sm md:py-2.5 md:pl-5 transition-all 
             focus:outline-none focus:ring-2 focus:ring-sky-100 focus:border-sky-400"
         />
         <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
@@ -126,7 +126,9 @@ export default function HeaderSearch({ initialKeyword = '', onSearchChange }: He
 
       {/* Dropdown Suggestions */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2
+           bg-white border border-slate-200 rounded-xl shadow-lg
+              overflow-hidden z-50 w-full max-h-[70vh]">
           {suggestions.length > 0 ? (
             <ul className="py-2 max-h-96 overflow-y-auto">
               {suggestions.map((product: Product) => (
@@ -136,7 +138,7 @@ export default function HeaderSearch({ initialKeyword = '', onSearchChange }: He
                     className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
                   >
                     {/* Product Image */}
-                    <div className="w-12 h-12 flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden">
+                    <div className="w-10 h-10 md:w-12 md:h-12 flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden">
                       <img
                         src={product.image}
                         alt={product.title}
