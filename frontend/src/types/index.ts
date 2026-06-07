@@ -124,3 +124,43 @@ export interface CartContextType {
     selectedCount: number;
 }
 
+// ----- ORDER TYPES -----
+export interface OrderItem {
+    product: string;
+    quantity: number;
+    price: number;
+    snapshot: {
+        title: string;
+        image: string;
+    };
+}
+
+export interface Order {
+    _id: string;
+    user: string | { _id: string; username: string; email: string };
+    items: OrderItem[];
+    total: number;
+    status: 'pending' | 'completed' | 'cancelled';
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface CreateOrderPayload {
+    items: Array<{
+        productId: string;
+        quantity: number;
+    }>;
+}
+
+export interface OrdersResponse {
+    success: boolean;
+    data: Order[];
+    pagination: Pagination;
+}
+
+export interface SingleOrderResponse {
+    success: boolean;
+    data: Order;
+    message?: string;
+}
+

@@ -8,6 +8,9 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/contexts/CartContext";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import OrderHistory from "./pages/OrderHistory";
+import OrderDetail from "./pages/OrderDetail";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +25,9 @@ function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/product/:id" element={<ProductDetailPage />} />
                             <Route path="/cart" element={<CartPage />} />
+                            <Route path="/checkout" element={<CheckoutPage />} />
+                            <Route path="/orders" element={<OrderHistory />} />
+                            <Route path="/orders/:id" element={<OrderDetail />} />
                         </Routes>
                         <Footer />
                     </BrowserRouter>

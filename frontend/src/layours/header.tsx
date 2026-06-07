@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ShoppingCart, User, LogOut, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, LogOut, ChevronDown, Package } from "lucide-react";
 import { useCallback, useState, useRef, useEffect } from "react";
 import HeaderSearch from "@/components/HeaderSearch";
 import AuthModal from "@/components/AuthModal";
@@ -87,6 +87,14 @@ const Header = () => {
                                         <p className="text-sm font-medium text-stone-900 truncate">{user.username}</p>
                                         <p className="text-xs text-stone-500 truncate">{user.email}</p>
                                     </div>
+                                    <Link
+                                        to="/orders"
+                                        onClick={() => setShowUserMenu(false)}
+                                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+                                    >
+                                        <Package size={16} />
+                                        My Orders
+                                    </Link>
                                     <button
                                         onClick={handleLogout}
                                         className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-stone-600 hover:text-red-600 hover:bg-red-50 transition-colors"

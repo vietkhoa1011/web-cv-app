@@ -1,6 +1,15 @@
-import { Product, ProductsResponse, FetchProductsParams, CategoriesResponse, ProductDetailResponse, SearchSuggestionsResponse, LoginCredentials, RegisterData, AuthUser } from '@/types';
+import { Product, ProductsResponse, FetchProductsParams, CategoriesResponse, ProductDetailResponse, SearchSuggestionsResponse, LoginCredentials, RegisterData, AuthUser, CreateOrderPayload, OrdersResponse, SingleOrderResponse } from '@/types';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// ----- Helper: get auth headers -----
+function getAuthHeaders(): HeadersInit {
+    const token = localStorage.getItem('eshop_token');
+    return {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+}
 
 // ----- AUTH -----
 export async function loginUser(credentials: LoginCredentials): Promise<{ token: string; user: AuthUser }> {
@@ -33,7 +42,6 @@ export async function registerUser(data: RegisterData): Promise<{ message: strin
 export async function fetchProducts(params: FetchProductsParams = {}): Promise<ProductsResponse> {
     const searchParams = new URLSearchParams();
 
-    // Chỉ gửi params nếu có giá trị (không gửi empty strings)
     if (params.search && params.search.trim()) searchParams.set('search', params.search.trim());
     if (params.category && params.category.trim()) searchParams.set('category', params.category.trim());
     if (params.priceMin !== undefined && params.priceMin > 0) searchParams.set('priceMin', params.priceMin.toString());
@@ -90,3 +98,38 @@ export async function fetchProductById(id: string): Promise<Product> {
     throw new Error('Invalid product detail response');
 }
 
+// ----- ORDERS -----
+export async function createOrder(payload: CreateOrderPayload): Promise<SingleOrderResponse> {
+    const response = await fetch(`${BASE_URL}/orders`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+    });
+    const json = await response.json();
+    if (!response.ok) {
+        throw new Error(json.message || 'Failed to create order');
+    }
+    return json;
+}
+
+export async function fetchMyOrders(page: number = 1, limit: number = 10): Promise<OrdersResponse> {
+    const url = `${BASE_URL}/orders?page=${page}&limit=${limit}`;
+    const response = await fetch(url, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const json: OrdersResponse = await response.json();
+    if (!json.success || !Array.isArray(json.data)) {
+        throw new Error('Invalid orders response');
+    }
+    return json;
+}
+
+export async function fetchOrderById(id: string): Promise<SingleOrderResponse> {
+    const url = `${BASE_URL}/orders/${id}`;
+    const response = await fetch(url, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const json: SingleOrderResponse = await response.json();
+    if (!json.success) {
+        throw new Error(json.message || 'Failed to fetch order');
+    }
+    return json;
+}

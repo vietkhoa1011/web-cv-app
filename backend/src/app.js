@@ -4,6 +4,7 @@ import cors from "cors";
 import categoryRoute from "./routes/category.js";
 import productRoute from "./routes/product.js";
 import authRoute from "./routes/auth.js";
+import orderRoute from "./routes/order.js";
 const app = express();
 // middleware
 app.use(cors());
@@ -13,5 +14,6 @@ app.get("/", (req, res) => res.send("API is running..."));
 app.use("/api/products", productRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/orders", orderRoute);
 
 export default app;
